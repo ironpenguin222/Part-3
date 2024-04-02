@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ShipController : MonoBehaviour
@@ -8,20 +9,30 @@ public class ShipController : MonoBehaviour
     public float acceleration = 2f;
     public float deceleration = 2f;
     public float strafeSpeed = 10f;
-    public float strafeDuration = 0.5f; 
-    public float strafeCooldown = 1f;   
+    public float strafeDuration = 0.5f;
+    public float strafeCooldown = 1f;
     public float maxHorizontalPosition = 2.5f;
     public GameObject bulletPrefab;
     public Transform bulletSpawnPoint;
     public float fireRate = 0.5f;
-
+    private int currentHealth;
+    public int maxHealth = 100;
     private float currentSpeed = 0f;
     private float nextFire = 0f;
     private static bool canStrafe = true;
 
+
+    void Start()
+    {
+        currentHealth = maxHealth;
+
+    }
     void Update()
     {
-
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
         float horizontalInput = Input.GetAxis("Horizontal");
         if (horizontalInput != 0f)
         {
@@ -50,16 +61,15 @@ public class ShipController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && canStrafe)
         {
-            StopCoroutine("AccelerationCoroutine");
             currentSpeed = 0f; // Reset current speed
             StartCoroutine(StrafeCoroutine(horizontalInput));
             StartCoroutine(StrafeCooldown());
         }
 
-        transform.Translate(Vector3.right * currentSpeed * Time.deltaTime);
+        transform.Translate(Vector2.right * currentSpeed * Time.deltaTime);
 
         float clampedX = Mathf.Clamp(transform.position.x, -maxHorizontalPosition, maxHorizontalPosition);
-        transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
+        transform.position = new Vector2(clampedX, transform.position.y);
     }
 
     void Shoot()
@@ -73,9 +83,14 @@ public class ShipController : MonoBehaviour
         float startTime = Time.time;
         while (Time.time < startTime + strafeDuration)
         {
-            transform.Translate(Vector3.right * strafeDirection * strafeSpeed * Time.deltaTime);
+            transform.Translate(Vector2.right * strafeDirection * strafeSpeed * Time.deltaTime);
             yield return null;
         }
+    }
+
+    public void EndRound()
+    {
+        currentHealth += 40;
     }
 
     IEnumerator StrafeCooldown()
@@ -83,5 +98,35 @@ public class ShipController : MonoBehaviour
         canStrafe = false;
         yield return new WaitForSeconds(strafeCooldown);
         canStrafe = true;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= (int)damage;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        
+        Destroy(gameObject);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("Hit");
+        
+        Projectile projectile = other.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            
+            TakeDamage(projectile.damage);
+            
+            Destroy(other.gameObject);
+
+        }
     }
 }

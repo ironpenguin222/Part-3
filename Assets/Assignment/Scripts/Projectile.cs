@@ -5,10 +5,23 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public float speed = 10f;
+    public float damage = 10f;
 
-    void Update()
+    void OnTriggerEnter2D(Collider2D other)
     {
-        transform.Translate(Vector3.up * speed * Time.deltaTime);
+        Debug.Log("Hit");
+        // Check if collided with a projectile
+        Projectile projectile = other.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            Destroy(gameObject);
+
+        }
+    }
+
+    protected virtual void Update()
+    {
+        transform.Translate(Vector2.up * speed * Time.deltaTime);
 
         if (!GetComponent<Renderer>().isVisible)
         {
@@ -16,8 +29,4 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        Destroy(gameObject);
-    }
 }
