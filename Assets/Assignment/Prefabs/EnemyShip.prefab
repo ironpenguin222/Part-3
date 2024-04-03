@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4799837413767175374}
   - component: {fileID: 922545812548091480}
   m_Layer: 0
-  m_Name: pixil-frame-0 (5)
+  m_Name: Ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,7 +147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8478883174340088560}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: BulletSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    //Projectile stats
     public float speed = 10f;
     public float damage = 10f;
 
@@ -14,7 +15,7 @@ public class Projectile : MonoBehaviour
         Projectile projectile = other.GetComponent<Projectile>();
         if (projectile != null)
         {
-            Destroy(gameObject);
+            Destroy(gameObject); // Projectiles are destroyed on collision with eachother
 
         }
     }
@@ -23,7 +24,7 @@ public class Projectile : MonoBehaviour
     {
         transform.Translate(Vector2.up * speed * Time.deltaTime);
 
-        if (!GetComponent<Renderer>().isVisible)
+        if (!GetComponent<Renderer>().isVisible) // Checks if visible, if not it is destroyed
         {
             Destroy(gameObject);
         }

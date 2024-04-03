@@ -5,6 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 
 {
+    // Enemy Stats
     public float maxSpeed = 5f;
     public float acceleration = 2f;
     public float deceleration = 2f;
@@ -18,10 +19,11 @@ public class Enemy : MonoBehaviour
     public int maxHealth = 60;
     private float currentSpeed = 0f;
     private float nextFire = 0f;
-    private Vector3 targetPosition;
+    public Vector3 targetPosition;
     private Levels levels;
     protected virtual void Start()
     {
+        // Setup The Base Enemy
         currentHealth = maxHealth;
         targetPosition = GetRandomPosition();
         levels = FindObjectOfType<Levels>();
@@ -29,39 +31,39 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-
+        // Movement
         transform.position = Vector2.MoveTowards(transform.position, targetPosition, currentSpeed * Time.deltaTime);
 
         if (transform.position == targetPosition)
         {
 
-            targetPosition = GetRandomPosition();
+            targetPosition = GetRandomPosition(); // Enemy Moves Towards Random Destination
         }
 
         UpdateSpeed();
 
-        if (Time.time > nextFire)
+        if (Time.time > nextFire) // Checks To Make Enemy Fire
         {
             nextFire = Time.time + fireRate;
             Shoot();
         }
     }
 
-    protected virtual void Shoot()
+    protected virtual void Shoot() // Shoots
     {
-        Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
+        Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity); // Instantiate Bullet
     }
 
     Vector2 GetRandomPosition()
     {
-        float randomX = Random.Range(leftBoundary, rightBoundary);
-        float randomY = transform.position.y;
-        return new Vector2(randomX, randomY);
+        float randomX = Random.Range(leftBoundary, rightBoundary); // Gets x to move to randomly
+        float randomY = transform.position.y; // Gets y to move to randomly
+        return new Vector2(randomX, randomY); // Returns the vector
     }
 
     void UpdateSpeed()
     {
-        float distanceToTarget = Vector3.Distance(transform.position, targetPosition);
+        float distanceToTarget = Vector3.Distance(transform.position, targetPosition); // Checks distance to target
 
         // Acceleration
         if (distanceToTarget > 1f)
@@ -79,7 +81,7 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= (int)damage;
+        currentHealth -= (int)damage; // Reduces health by damage amount
         if (currentHealth <= 0)
         {
             Die();
@@ -90,17 +92,18 @@ public class Enemy : MonoBehaviour
     {
         // Die
         Destroy(gameObject);
-        levels.EnemyDestroyed();
+        levels.EnemyDestroyed(); // Tells levels that an enemy has been destroyed
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other) // Collision
     {
-        Debug.Log("Hit");
+
+        //Checks projectile to see if it's player's
         Projectile projectile = other.GetComponent<Projectile>();
 
         if (projectile.CompareTag("Player"))
         {
-            TakeDamage(projectile.damage);
+            TakeDamage(projectile.damage); // Takes damage
             Destroy(other.gameObject);
         }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ShipController : MonoBehaviour
 {
+    //Ship stats and variables
     public float maxSpeed = 5f;
     public float acceleration = 2f;
     public float deceleration = 2f;
@@ -24,24 +25,24 @@ public class ShipController : MonoBehaviour
 
     void Start()
     {
-        currentHealth = maxHealth;
+        currentHealth = maxHealth; // Sets health at start
 
     }
     void Update()
     {
-        if (currentHealth > maxHealth)
+        if (currentHealth > maxHealth) // Makes sure health doesn't go beyond max
         {
             currentHealth = maxHealth;
         }
-        float horizontalInput = Input.GetAxis("Horizontal");
+        float horizontalInput = Input.GetAxis("Horizontal"); // Checks for movement
         if (horizontalInput != 0f)
         {
-            currentSpeed += horizontalInput * acceleration * Time.deltaTime;
+            currentSpeed += horizontalInput * acceleration * Time.deltaTime; // adds the time and acceleration to make acceleration on ship.
             currentSpeed = Mathf.Clamp(currentSpeed, -maxSpeed, maxSpeed);
         }
         else
         {
-            if (currentSpeed > 0f)
+            if (currentSpeed > 0f) // Decelerating if speed is more than 0
             {
                 currentSpeed -= deceleration * Time.deltaTime;
                 currentSpeed = Mathf.Max(0f, currentSpeed);
@@ -53,56 +54,57 @@ public class ShipController : MonoBehaviour
             }
         }
 
-        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        if (Input.GetButton("Fire1") && Time.time > nextFire) // Checks if button was pressed then fires
         {
-            nextFire = Time.time + fireRate;
+            nextFire = Time.time + fireRate; // creates firerate
             Shoot();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && canStrafe)
+        if (Input.GetKeyDown(KeyCode.Space) && canStrafe) // strafing
         {
             currentSpeed = 0f; // Reset current speed
-            StartCoroutine(StrafeCoroutine(horizontalInput));
-            StartCoroutine(StrafeCooldown());
+            StartCoroutine(StrafeCoroutine(horizontalInput)); // starts coroutine to strafe
+            StartCoroutine(StrafeCooldown()); // starts coroutine to cooldown strafe
         }
 
         transform.Translate(Vector2.right * currentSpeed * Time.deltaTime);
 
-        float clampedX = Mathf.Clamp(transform.position.x, -maxHorizontalPosition, maxHorizontalPosition);
+        float clampedX = Mathf.Clamp(transform.position.x, -maxHorizontalPosition, maxHorizontalPosition); // Clamps player, can't leave game area
         transform.position = new Vector2(clampedX, transform.position.y);
     }
 
-    void Shoot()
+
+    void Shoot() // Shoots
     {
         Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
     }
 
     IEnumerator StrafeCoroutine(float horizontalInput)
     {
-        float strafeDirection = Mathf.Sign(horizontalInput);
+        float strafeDirection = Mathf.Sign(horizontalInput); // Finds direction
         float startTime = Time.time;
-        while (Time.time < startTime + strafeDuration)
+        while (Time.time < startTime + strafeDuration) // while loop to make sure strafing is going on for its assigned duration
         {
-            transform.Translate(Vector2.right * strafeDirection * strafeSpeed * Time.deltaTime);
+            transform.Translate(Vector2.right * strafeDirection * strafeSpeed * Time.deltaTime); // strafes the player to the side
             yield return null;
         }
     }
 
     public void EndRound()
     {
-        currentHealth += 40;
+        currentHealth += 40; // Regains health after each round
     }
 
     IEnumerator StrafeCooldown()
     {
         canStrafe = false;
-        yield return new WaitForSeconds(strafeCooldown);
+        yield return new WaitForSeconds(strafeCooldown); // Waits, so that player must wait out the cooldown
         canStrafe = true;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage) // Player take damage
     {
-        currentHealth -= (int)damage;
+        currentHealth -= (int)damage; // Subtract health by damage
         if (currentHealth <= 0)
         {
             Die();
@@ -112,7 +114,7 @@ public class ShipController : MonoBehaviour
     void Die()
     {
         
-        Destroy(gameObject);
+        Destroy(gameObject); // Dies
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -121,9 +123,10 @@ public class ShipController : MonoBehaviour
         
         Projectile projectile = other.GetComponent<Projectile>();
         if (projectile != null)
+            // Checks if projectile hit it
         {
             
-            TakeDamage(projectile.damage);
+            TakeDamage(projectile.damage); // Take damage
             
             Destroy(other.gameObject);
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6011641086687780951}
   - component: {fileID: 3671757659302300658}
   m_Layer: 0
-  m_Name: pixil-frame-0 (4)
+  m_Name: Ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 4652050167339130922}
   - component: {fileID: 3895259468752656739}
   m_Layer: 0
-  m_Name: PlayerShip
+  m_Name: PlayerShip (1)
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -285,7 +285,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3371052641040975807}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: BulletSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
