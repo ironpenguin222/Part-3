@@ -5,6 +5,7 @@ using UnityEngine;
 public class HomingProjectile : Projectile
 
 {
+    // Variables
     public float homingSpeed = 5f;
     public GameObject playerShip;
 
@@ -13,10 +14,10 @@ public class HomingProjectile : Projectile
         if (playerShip != null)
         {
             
-            Vector2 directionToPlayer = (playerShip.transform.position - transform.position).normalized;
+            Vector2 directionToPlayer = (playerShip.transform.position - transform.position).normalized; // Find out direction towards player
 
            
-            Vector2 newVelocity = Vector3.RotateTowards(transform.up, -directionToPlayer, homingSpeed * Time.deltaTime, 0f);
+            Vector2 newVelocity = Vector3.RotateTowards(transform.up, -directionToPlayer, homingSpeed * Time.deltaTime, 0f); // Rotate towards player and gain velocity towards
             transform.up = newVelocity; 
         }
 
@@ -24,7 +25,7 @@ public class HomingProjectile : Projectile
         transform.Translate(Vector2.down * speed * Time.deltaTime);
 
         
-        if (!GetComponent<Renderer>().isVisible)
+        if (!GetComponent<Renderer>().isVisible) // When offscreen delete
         {
             Destroy(gameObject);
         }
